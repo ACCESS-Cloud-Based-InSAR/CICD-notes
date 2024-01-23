@@ -1,5 +1,8 @@
 # Notes on Github Workflows for CI/CD
 
+**Disclaimer** this a very rough draft.
+It likely contains errors and may be a little clunky in communication and organization.
+
 # Background
 
 This is based on the Continuous Integration and Continuous Deployment (CI/CD) workflow for python libraries hosted on Github.
@@ -74,6 +77,9 @@ More details of what is needed for each is detailed below.
 + [Build](https://github.com/ACCESS-Cloud-Based-InSAR/DockerizedTopsApp/blob/dev/.github/workflows/build.yml) - builds and releases docker containers for `dev` and `main` branches. Requires the shared account Github token as indicated in this [line](https://github.com/ACCESS-Cloud-Based-InSAR/DockerizedTopsApp/blob/dev/.github/workflows/build.yml#L26)
 
 # Diving Deeper
+
+We organize the actions and setup based on the categories of `Testing`, `Static Analysis` and `Release` noted above. 
+We also go into releasing the software on standard package repositories and various needed setup.
 
 ## A. Testing
 
