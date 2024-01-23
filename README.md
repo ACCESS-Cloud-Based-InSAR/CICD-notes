@@ -2,6 +2,7 @@
 
 **Disclaimer**: this a rough draft, meant for ACCESS team.
 It likely contains errors and will be clunky in communication/organization.
+I can't believe how much ChatGPT knows about all these topics, too!
 
 # Background
 
@@ -299,12 +300,18 @@ conda activate ENVIRONMENT_NAME_FOR_PACKAGE
 mamba install -c conda-forge grayskull
 grayskull pypi --strict-conda-forge YOUR_PACKAGE_NAME
 ```
+Even with grayskull, Joe Kennedy gave me [this](https://github.com/conda-forge/staged-recipes/pull/25107/files#r1462455525) suggestion and this [one](https://github.com/conda-forge/staged-recipes/pull/25107/files#r1462456617) too.
+
 
 There is also an `example` recipe [here](https://github.com/conda-forge/staged-recipes/blob/main/recipes/example/meta.yaml), but it documents a lot more than I need for a basic library.
 
-Finally, you will need one of the *maintainers* to be already a maintainer on an existing conda-forge package. You will simply have them say "I am willing to be a maintainer" on the repository.
+Finally, you will need one of the *maintainers* to be already a maintainer on an existing conda-forge package. 
+You will simply have them say "I am willing to be a maintainer" on the repository.
 
-Lastly, `conda-forge` asks you to tag various accounts to expedite merging e.g. tagging `@conda-forge/staged-recipes` and/or `@conda-forge/help-python` (see the example PR above). 
+After that, you need to make sure the `meta.yml` is in working order so run `@conda-forge-admin, please lint`. 
+There are various automated maintainer services documented [here](https://conda-forge.org/docs/maintainer/00_intro.html).
+Once your PR is in good working order, let the python conda-forge maintainers know it's ready via: `@conda-forge/help-python, ready for review!`
+
 
 #### Why `conda-forge`? Isn't `PyPI` enough?
 
