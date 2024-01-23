@@ -23,6 +23,7 @@ I can't believe how much ChatGPT knows about all these topics, too!
     - [Changelog](#changelog)
     - [Release Cycle](#release-cycle)
     - [A Checklist for Release](#a-checklist-for-release)
+    - [Semantic Versioning](#semantic-versioning)
     - [General Setup for Automatic Release Cycle](#general-setup-for-automatic-release-cycle)
   - [Building your library](#building-your-library)
     - [PyPI Setup](#pypi-setup)
@@ -124,6 +125,7 @@ The detailed descriptions are below in [Diving Deeper](#diving-deeper).
    + has `pyproject.toml` with `scm` setup and initilal 0.0.0 annotated tag on `dev` and `main` branches (see details in [Building Your Library](#building-your-library))
    + has `environment.yml` for environment setup
    + has `pytest` test suite
+   + has a `CHANGELOG.md` formatted in standard [way](https://common-changelog.org/) and has version that will be initial release. Here is a [sample](https://github.com/ACCESS-Cloud-Based-InSAR/s1_frame_enumerator/blob/dev/CHANGELOG.md).
 3. Create secrets for necessary action workflow calls in particular:
    + Github user token for `Build` and `Tag version` actions in the [Summary of Actions/Workflows](#summary-of-actionsworkflows) above
    + PyPI user token for distribution as in `Distribute to PyPI` action in the [Summary of Actions/Workflows](#summary-of-actionsworkflows) above
@@ -268,6 +270,16 @@ There should be a pull request (PR) to `main` with the following:
 * The PR should be titled `vX.X.X` (see end of article of you forget this)
 * The PR should be labeled with `patch`, `minor`, or `major` in agreement with the Changelog! There is an action that checks this so let the actions complete! (see end of the article if you forget this). If you have `bumpless` release, then this is just an action and will not be distributed.
 * when you run `python -m 'import <LIBRARY>; <LIBRARY>.__version__`, you should get the patch version bump you are expecting i.e. patch should be incremented.
+
+
+### Semantic Versioning
+
+Semantic versioning is a standardized way to version software e.g. `nifty_package v5.3.8`.
+It is documented [here](https://semver.org/).
+In this CI/CD, we use a changelog using the standard format documented [here](https://common-changelog.org/).
+The release cycle documented simply states that if your current version is say `v5.3.8` and you have a minor "bump", then the next release is `v5.4.8`.
+There are more details about what constitutes different bumps e.g. a total change to the API would constitute `major`.
+See the semantic versioning document linked above for details.
 
 
 ### General Setup for Automatic Release Cycle
