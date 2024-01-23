@@ -4,6 +4,35 @@
 It likely contains errors and will be clunky in communication/organization.
 I can't believe how much ChatGPT knows about all these topics, too!
 
+# Table of Contents
+
+- [Notes on Github Workflows for CI/CD](#notes-on-github-workflows-for-cicd)
+- [Table of Contents](#table-of-contents)
+- [Background](#background)
+  - [Examples of Libraries with the CI/CD](#examples-of-libraries-with-the-cicd)
+- [Quick Guide](#quick-guide)
+  - [Summary of Actions/Workflows](#summary-of-actionsworkflows)
+  - [Checklist for Setup](#checklist-for-setup)
+- [Diving Deeper](#diving-deeper)
+  - [A. Testing](#a-testing)
+    - [Digression about Testing](#digression-about-testing)
+  - [B. Static Analysis](#b-static-analysis)
+    - [Static analysis in `VScode` (or another IDE)](#static-analysis-in-vscode-or-another-ide)
+  - [C . Release](#c--release)
+  - [General Outline of Release Workflow (Developer Perspective)](#general-outline-of-release-workflow-developer-perspective)
+    - [Changelog](#changelog)
+    - [Release Cycle](#release-cycle)
+    - [A Checklist for Release](#a-checklist-for-release)
+    - [General Setup for Automatic Release Cycle](#general-setup-for-automatic-release-cycle)
+  - [Building your library](#building-your-library)
+    - [PyPI Setup](#pypi-setup)
+    - [Conda-forge Setup](#conda-forge-setup)
+      - [Why `conda-forge`? Isn't `PyPI` enough?](#why-conda-forge-isnt-pypi-enough)
+    - [More setup for release](#more-setup-for-release)
+  - [Common Gotchas](#common-gotchas)
+
+
+
 # Background
 
 This is based on the Continuous Integration and Continuous Deployment (CI/CD) workflow for python libraries hosted on Github.
@@ -58,7 +87,9 @@ Although a "plugin" is not the focus of the article, the plugin cookie cutter pr
 The cookie-cutter assumes there is a script/entrypoint as the "standard" way to run the library from the command line. 
 Since there is a lot of setup, it's easier for me to remove things than add something in a manner that is incorrect. Thus, the cookie-cutter linked is very helpful.
 
-# Summary of Actions/Workflows
+# Quick Guide
+
+## Summary of Actions/Workflows
 
 All the workflows are documented at https://github.com/ASFHyP3/actions.
 Having centralized workflows means anytime the workflows are updated in this location, they are almost automatically deployed to
@@ -76,6 +107,22 @@ More details of what is needed for each is detailed below.
 + [Tag version](https://github.com/OPERA-Cal-Val/tile-mate/blob/dev/.github/workflows/tag.yml) - uses the github PR labels to create an annotated tag for release. Requires the repo/org user to automate this. See this [line](https://github.com/OPERA-Cal-Val/tile-mate/blob/dev/.github/workflows/tag.yml#L15).
 + [Test](https://github.com/OPERA-Cal-Val/tile-mate/blob/dev/.github/workflows/test.yml) - the pytest workflow
 + [Build](https://github.com/ACCESS-Cloud-Based-InSAR/DockerizedTopsApp/blob/dev/.github/workflows/build.yml) - builds and releases docker containers for `dev` and `main` branches. Requires the shared account Github token as indicated in this [line](https://github.com/ACCESS-Cloud-Based-InSAR/DockerizedTopsApp/blob/dev/.github/workflows/build.yml#L26)
+
+## Checklist for Setup
+
+This is meant to be a checklist.
+The detailed descriptions are below in [Diving Deeper](#diving-deeper).
+
+1. Create a shared email for project/org and create accounts on
+   + PyPI
+   + Github
+2. Make sure project has 
+   + `pyproject.toml` with `scm` setup and initilal 0.0.1 annotated tag (see details in [Building Your Library](#building-your-library))
+   + `environment.yml` for environment setup
+   + A `pytest` test suite
+3. Create secrets for necessary action workflow calls in particular:
+   + Github user token for `Build` and `Tag version` actions in the [Summary of Actions/Workflows](#summary-of-actionsworkflows) above
+   + PyPI user token for distribution as in `Distribute to PyPI` action in the [Summary of Actions/Workflows](#summary-of-actionsworkflows) above
 
 # Diving Deeper
 
