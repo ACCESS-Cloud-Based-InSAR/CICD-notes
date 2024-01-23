@@ -1,7 +1,7 @@
 # Notes on Github Workflows for CI/CD
 
-**Disclaimer** this a very rough draft.
-It likely contains errors and may be a little clunky in communication and organization.
+**Disclaimer**: this a rough draft, meant for ACCESS team.
+It likely contains errors and will be clunky in communication/organization.
 
 # Background
 
