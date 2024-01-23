@@ -309,7 +309,7 @@ git push --tags
 ```
 This will create a main branch that mirrors your first commit. Now when `dev` branch is ready for a release follow the instructions from the next section!
 
-**Important**: You will want your changelog to look something like this:
+**Important Note**: You will want your changelog to look something like this:
 
 ```
 # Changelog
@@ -327,6 +327,16 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit.
 ```
 
 If the version is wrong, you will need to fix it as indicated in the [Gotchas](#common-gotchas).
+
+
+**Important Note 2**: Each time a new release is created, you will want to perform a `pip install` again to ensure the latest tags are correctly ingested into your development environment, so that you can run something like:
+
+```
+In [1]: import s1_frame_enumerator
+
+In [2]: s1_frame_enumerator.__version__
+Out[2]: '0.0.2.dev4+g6615c23'
+```
 
 
 ### PyPI Setup
