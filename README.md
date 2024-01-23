@@ -29,7 +29,10 @@ I can't believe how much ChatGPT knows about all these topics, too!
     - [Conda-forge Setup](#conda-forge-setup)
       - [Why `conda-forge`? Isn't `PyPI` enough?](#why-conda-forge-isnt-pypi-enough)
     - [More setup for release](#more-setup-for-release)
+    - [Engine for Automatically Tagging Releases](#engine-for-automatically-tagging-releases)
   - [Common Gotchas](#common-gotchas)
+    - [Missing a `bumpless`, `patch`, `minor`, `major` label with PR to Main (i.e. a release).](#missing-a-bumpless-patch-minor-major-label-with-pr-to-main-ie-a-release)
+    - [A release v... that is not correctly synced to Changelog \[v...\]](#a-release-v-that-is-not-correctly-synced-to-changelog-v)
 
 
 
@@ -306,6 +309,25 @@ git push --tags
 ```
 This will create a main branch that mirrors your first commit. Now when `dev` branch is ready for a release follow the instructions from the next section!
 
+**Important**: You will want your changelog to look something like this:
+
+```
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [PEP 440](https://www.python.org/dev/peps/pep-0440/)
+and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+
+## [0.0.1]
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+```
+
+If the version is wrong, you will need to fix it as indicated in the [Gotchas](#common-gotchas).
+
 
 ### PyPI Setup
 
@@ -385,13 +407,22 @@ The *user* github token can be obtained in the profile of the account you need.
 Github recommends rotating tokens frequently (longest acceptable now is 1 year).
 The user token is then uploaded to your shared secrets either at org or repo level and populated in the action (see this [line](https://github.com/OPERA-Cal-Val/tile-mate/blob/dev/.github/workflows/release-github.yml#L16)).
 
+### Engine for Automatically Tagging Releases
 
+It's a bit confusing to see how the tagging gets populated correctly into all the release.
+Here is a breif summary:
 
+1. A PR from `dev` to `main` with title `v...` triggers [the bump version](https://github.com/ASFHyP3/actions/blob/develop/.github/workflows/reusable-bump-version.yml). It's complicated because it's using the Github API to extract the expected "bump" from the PR labels (major, minor, patch, bumpless) will be used to determine how the version number will change. The main line in the action uses `bump2version` [here](https://github.com/ASFHyP3/actions/blob/develop/.github/workflows/reusable-bump-version.yml#L117), where the extracted info from API is used to create an annotated git tag.
+2. From there, a version tag of the form `v...` triggers the [github-release](https://github.com/ASFHyP3/actions/blob/develop/.github/workflows/reusable-release.yml) action whose main engine is this action [library](https://github.com/anton-yurchenko/git-release). Basically, it is triggered by the annotated tag of the form `v...` and uses that to compare to the standard formatted Changelog to create a release. The github release then does a fastfoward merge to ensure the tag for `dev` is caught up so that the automatic release cycle can continue on!
+
+A PR like this [one](https://github.com/ACCESS-Cloud-Based-InSAR/s1_frame_enumerator/pull/6) is opened and merged into `dev` by the "bot" account.
 
 
 ## Common Gotchas
 
-1. Forgetting label of (`bumpless`, `patch`, `minor`, `major`) with PR to Main (i.e. a release). This is when you are doing things quickly without a review.
+### Missing a `bumpless`, `patch`, `minor`, `major` label with PR to Main (i.e. a release). 
+
+This misstep is when you are doing things quickly without a review (there is an action to check this!).
 
 If you push an annotated tag to `dev` this will fix the release and distribution.
 
@@ -399,3 +430,27 @@ If you push an annotated tag to `dev` this will fix the release and distribution
 git tag -a v0.0.4 -m "Release v0.0.4" 332a94a091d28794960b28001ca15a51e58ec650
 git push --tags
 ```
+
+### A release v... that is not correctly synced to Changelog [v...]
+
+This happens when you make a typo in the Changelog version so it doesn't match what you expect via the label bump you created (i.e. major, minor, ...).
+You will get an error like [this](https://github.com/ACCESS-Cloud-Based-InSAR/s1_frame_enumerator/actions/runs/7631284059/job/20788891290):
+```
+INFO 'git-release' version: 3.5.0                 
+WARNING 'DRAFT_RELEASE' is not equal to 'true', assuming 'false' 
+WARNING 'PRE_RELEASE' is not equal to 'true', assuming 'false' 
+WARNING 'ALLOW_TAG_PREFIX' enabled                   
+WARNING 'RELEASE_NAME_PREFIX' is set to 's1_frame_enumerator ' 
+WARNING 'CHANGELOG_FILE' is not defined, assuming 'CHANGELOG.md' 
+FATAL changelog does not contain changes for requested project version 
+```
+The above was when the Changelog had version `[0.0.0]`, but the patch bump expected `[0.0.1]` (see the PR [here](https://github.com/ACCESS-Cloud-Based-InSAR/s1_frame_enumerator/pull/5/files) - specifically the `CHANGELOG.md`).
+It did not allow a fast-forward merge in the [github-release](https://github.com/ASFHyP3/actions/blob/develop/.github/workflows/reusable-release.yml).
+That simply means a PR like this [one](https://github.com/ACCESS-Cloud-Based-InSAR/s1_frame_enumerator/pull/6) was opened but never closed.
+To solve, do the following:
+
+1. Create release manually on the Github site (Releases is on the right side bar) from tag that was successfully generated
+2. Merge fastfoward PR as opened which will update `dev` with the needed tags for future
+3. Fix changelog in PR (no need to do a subsequent release as this change is "bumpless")
+
+It's relatively small issue but knowing how to fix it ensures things work properly going forward.
