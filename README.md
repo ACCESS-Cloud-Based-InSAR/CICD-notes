@@ -116,10 +116,11 @@ The detailed descriptions are below in [Diving Deeper](#diving-deeper).
 1. Create a shared email for project/org and create accounts on
    + PyPI
    + Github
-2. Make sure project has 
-   + `pyproject.toml` with `scm` setup and initilal 0.0.1 annotated tag (see details in [Building Your Library](#building-your-library))
-   + `environment.yml` for environment setup
-   + A `pytest` test suite
+2. Make sure project  
+   + is version controlled through `git` and has a default `dev` branch on `Github`
+   + has `pyproject.toml` with `scm` setup and initilal 0.0.0 annotated tag on `dev` and `main` branches (see details in [Building Your Library](#building-your-library))
+   + has `environment.yml` for environment setup
+   + has `pytest` test suite
 3. Create secrets for necessary action workflow calls in particular:
    + Github user token for `Build` and `Tag version` actions in the [Summary of Actions/Workflows](#summary-of-actionsworkflows) above
    + PyPI user token for distribution as in `Distribute to PyPI` action in the [Summary of Actions/Workflows](#summary-of-actionsworkflows) above
