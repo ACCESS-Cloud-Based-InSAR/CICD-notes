@@ -133,7 +133,7 @@ The detailed descriptions are below in [Diving Deeper](#diving-deeper).
    + PyPI user token for distribution as in `Distribute to PyPI` action in the [Summary of Actions/Workflows](#summary-of-actionsworkflows) above
 4. Create branch protections for `dev` and `main`
    + Make sure checks have to pass before merging
-   + Make sure that the shared/bot account can perform merges without checks passing (this is required for fast-forward merges tags)
+   + Make sure that the shared/bot account can perform merges without checks passing on `dev` (this is required for fast-forward merges tags)
 
 # Diving Deeper
 
