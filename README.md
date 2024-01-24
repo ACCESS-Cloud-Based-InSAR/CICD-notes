@@ -27,10 +27,12 @@ I can't believe how much ChatGPT knows about all these topics, too!
     - [General Setup for Automatic Release Cycle](#general-setup-for-automatic-release-cycle)
   - [Building your library](#building-your-library)
     - [PyPI Setup](#pypi-setup)
+      - [PyPI Account setup](#pypi-account-setup)
     - [Conda-forge Setup](#conda-forge-setup)
       - [Why `conda-forge`? Isn't `PyPI` enough?](#why-conda-forge-isnt-pypi-enough)
     - [More setup for release](#more-setup-for-release)
     - [Engine for Automatically Tagging Releases](#engine-for-automatically-tagging-releases)
+  - [Branch Protection and Github Branch Setup](#branch-protection-and-github-branch-setup)
   - [Common Gotchas](#common-gotchas)
     - [Missing a `bumpless`, `patch`, `minor`, `major` label with PR to Main (i.e. a release).](#missing-a-bumpless-patch-minor-major-label-with-pr-to-main-ie-a-release)
     - [A release v... that is not correctly synced to Changelog \[v...\]](#a-release-v-that-is-not-correctly-synced-to-changelog-v)
@@ -129,6 +131,9 @@ The detailed descriptions are below in [Diving Deeper](#diving-deeper).
 3. Create secrets for necessary action workflow calls in particular:
    + Github user token for `Build` and `Tag version` actions in the [Summary of Actions/Workflows](#summary-of-actionsworkflows) above
    + PyPI user token for distribution as in `Distribute to PyPI` action in the [Summary of Actions/Workflows](#summary-of-actionsworkflows) above
+4. Create branch protections for `dev` and `main`
+   + Make sure checks have to pass before merging
+   + Make sure that the shared/bot account can perform merges without checks passing (this is required for fast-forward merges tags)
 
 # Diving Deeper
 
@@ -361,7 +366,7 @@ We first detail how to create an account.
 We will add more to this section as necessary.
 It is best to setup an account using the shared email of the project/org as discussed earlier.
 PyPI has a 2-factor authentication which reuires an authentication application or simply using the password manager on iOS.
-This will not be detailed, but is a bit annoying.
+There is a brief interlude on how to do that in the subsection below.
 Once a PyPI account has been setup, it is important to upload your PyPI user token to github.
 There are orginization secret 
 
@@ -373,6 +378,18 @@ In the future, I may try the following to ease my headache:
 * This library for validation: https://pypi.org/project/validate-pyproject/
 * Publishing to https://test.pypi.org/
 Note that `test-pypi` still requires the same account setup.
+
+#### PyPI Account setup
+
+To get a user token, 2-factor authentication must be setup.
+This requires that you use a password app to sync to the shared account.
+A single individual will have to use this.
+As of now, it requires to:
+
+1. Generate recovery codes
+2. Upload user/password to password app (native iOS password manager works fine)
+3. Use 1 of N security codes to get link to open password manager for PyPI (this was in the form of a QR code)
+4. Get security code to verify 2-factor authentication has been setup.
 
 
 ### Conda-forge Setup
@@ -439,6 +456,16 @@ Here is a breif summary:
 
 A PR like this [one](https://github.com/ACCESS-Cloud-Based-InSAR/s1_frame_enumerator/pull/6) is opened and merged into `dev` by the "bot" account.
 
+
+## Branch Protection and Github Branch Setup
+
+This is required for the [github-release](https://github.com/ASFHyP3/actions/blob/develop/.github/workflows/reusable-release.yml) detailed above.
+More generally, it allows several developers to quickly develop features while preserving the existing functionality of a library particularly when their is a robust test-stuie.
+Below is a sample of rules we use on `dev`:
+
+![github_branch](images/sample_branch_protection.png)
+
+**Note**: the `opera-pst-dev` is the shaded out developer is the *shared-account*!
 
 ## Common Gotchas
 
