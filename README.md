@@ -151,13 +151,14 @@ We are *leaning into* using the "reusable" workflows from ASF to ensure long-ter
 ### Digression about Testing
 
 This is a brief section not relevant for the rest of the article.
-Further, I am still getting better at writing test-suites.
-We mention a few contextual testing terminology to provide 
-There are two types of tests that we typically see: integration tests and unit tests. 
-*Integration tests* are running large workflows end-to-end and comparing output data with fixed "golden" datasets.
-Such integration tests can take time to run particular with large science workflows.
+Further, I am still relatively new to writing tests so this is a brain dump from a novice.
+We mention a few infomral terminologies I have picked up from ASF to better frame the types of tests we need (note there are many more nuanced testing terminologies as documented [here](https://www.atlassian.com/continuous-delivery/software-testing/types-of-software-testing)). 
+
+There are two types of tests that we are interested in: integration tests and unit tests. 
+*Integration tests* (which we are conflating with end-to-end tests) are running large workflows, end-to-end and comparing output data with fixed "golden" datasets.
+Integration tests can take time to run especially if they involve CPU-intensive, long-running science workflows.
 *Unit tests* are typically tests that verify the correctness of small parts of the code (functions, object intitiation, error handling, etc).
-There is not necessarily a clean distinction in practice because sometimes there can be long-running functions or object initiation.
+There is not necessarily a clean distinction in practice between these two tests because there can be long-running functions or object initiation that may be within an end-to-end workflow.
 Frequently, a geoscience library needs input data to be downloaded from data repository.
 However, downloading data is a time sink.
 It is important to be comfortable *mocking* data for tests.
@@ -168,12 +169,11 @@ An example of using `pytest-mock` can be seen [here](https://github.com/dbekaert
 There is a lot we have mentioned (and not mentioned) beyond the scope of the article, but this is extraordinarily important for smooth long-term development.
 There is even a type of development call ["test-driven development"](https://en.wikipedia.org/wiki/Test-driven_development), which for every new feature you write the test before you start the development to ensure the correctness of your development. This is a tall order (for me); however, I find it is good practice to write tests for new features and functionality as they are added.
 
-As edge cases get uncovered, as invariably they do, it is important to include these cases in the test-suite so future users are aware of this.
-As code becomes more complex, a test can offer insight into the choices being made.
-Specifically, it provides readable insight into the larger API as complex changes are made.
+As edge cases get uncovered, it is important to include these cases in the test-suite so future users are aware of this and any changes to the software can consistently check these cases.
+As code becomes more complex, a test offers insight into API and how to use it.
 For example, in `dem-stitcher`, there are missing 30 meter tiles over Armenia and Azerbaijan, but those tiles are not missing over 90 meters.
-So, we simply upsample these tiles for general users.
-An integration test such as this [one](https://github.com/ACCESS-Cloud-Based-InSAR/dem-stitcher/blob/dev/tests/test_missing.py#L51) shows the expected output of the API without having to understand the nuances of the larger code base.
+So, in the library, we upsample the 90 meter tiles to 30 meters when a user requests over these areas.
+An integration test such as this [one](https://github.com/ACCESS-Cloud-Based-InSAR/dem-stitcher/blob/dev/tests/test_missing.py#L51) shows the expected output of the API without having to understand the nuances of the larger code base, which can be more complex to follow.
 
 ## B. Static Analysis
 
