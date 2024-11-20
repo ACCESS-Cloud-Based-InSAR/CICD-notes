@@ -25,12 +25,13 @@ I can't believe how much ChatGPT knows about all these topics, too!
     - [A Checklist for Release](#a-checklist-for-release)
     - [Semantic Versioning](#semantic-versioning)
     - [General Setup for Automatic Release Cycle](#general-setup-for-automatic-release-cycle)
-  - [Building your library](#building-your-library)
+  - [The `Pyproject.toml` and automated versioning via `setuptools_scm`](#the-pyprojecttoml-and-automated-versioning-via-setuptools_scm)
+  - [Distributing/Publishing the Library](#distributingpublishing-the-library)
     - [PyPI Setup](#pypi-setup)
       - [PyPI Account setup](#pypi-account-setup)
     - [Conda-forge Setup](#conda-forge-setup)
       - [Why `conda-forge`? Isn't `PyPI` enough?](#why-conda-forge-isnt-pypi-enough)
-    - [More setup for release](#more-setup-for-release)
+  - [More Release Setup](#more-release-setup)
     - [Engine for Automatically Tagging Releases](#engine-for-automatically-tagging-releases)
   - [Branch Protection and Github Branch Setup](#branch-protection-and-github-branch-setup)
   - [Common Gotchas](#common-gotchas)
@@ -125,7 +126,7 @@ The detailed descriptions are below in [Diving Deeper](#diving-deeper).
 2. Make sure project  
    + is version controlled through `git` and has a default `dev` branch on `Github`
    + has `pyproject.toml` with `scm` setup and initilal 0.0.0 annotated tag on `dev` and `main` branches (see details in [Building Your Library](#building-your-library))
-   + has `environment.yml` for environment setup
+   + has `environment.yml` for environment setup (and includes `setuptools` and `setuptools_scm` as noted in [The `Pyproject.toml` and automated versioning via `setuptools_scm`](#the-pyprojecttoml-and-automated-versioning-via-setuptools_scm))
    + has `pytest` test suite
    + has a `CHANGELOG.md` formatted in standard [way](https://common-changelog.org/) and has version that will be initial release. Here is a [sample](https://github.com/ACCESS-Cloud-Based-InSAR/s1_frame_enumerator/blob/dev/CHANGELOG.md).
 3. Create secrets for necessary action workflow calls in particular:
@@ -297,7 +298,7 @@ From a bird's eye-view, you need:
 2. Account on PyPI using **shared** account
 3. A working `pyproject.toml` file that can successfully `pip install .` your library
 
-## Building your library
+## The `Pyproject.toml` and automated versioning via `setuptools_scm`
 
 `Pyproject.toml` is the preferred way of way building/publishing a python library as indicated [here](https://packaging.python.org/en/latest/guides/section-build-and-publish/).
 Here is a [sample](https://github.com/OPERA-Cal-Val/tile-mate/blob/dev/pyproject.toml).
@@ -337,14 +338,22 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [PEP 440](https://www.python.org/dev/peps/pep-0440/)
 and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-
 ## [0.0.1]
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit.
 ```
 
-If the version is wrong, you will need to fix it as indicated in the [Gotchas](#common-gotchas).
+**Additional Notes**:
 
+- You will want to make sure that `setuptools` and `setuptools_scm` are in your `environment.yml` file so that versioning is done correctly.
+
+- Also, if you install your package via `pip install -e .` (i.e. in *editable* mode), then the versioning will be based on the commit at the time of this `pip` installation! Thus, it is important to use the following command:
+
+  ```
+  python -m setuptools_scm
+  ```
+
+If the version is wrong, you will need to fix it as indicated in the [Gotchas](#common-gotchas).
 
 **Important Note 2**: Each time a new release is created, you will want to perform a `pip install` again to ensure the latest tags are correctly ingested into your development environment, so that you can run something like:
 
@@ -355,6 +364,7 @@ In [2]: s1_frame_enumerator.__version__
 Out[2]: '0.0.2.dev4+g6615c23'
 ```
 
+## Distributing/Publishing the Library 
 
 ### PyPI Setup
 
@@ -438,7 +448,7 @@ There are more streamlined build instructions on the repository [page](https://g
 Still, this is now as simple as `mamba install isce2`!
 What a relief for someone like myself, who has never actually built `isce2` before (yes, I admit it).
 
-### More setup for release
+## More Release Setup
 
 To ensure the tags are repopulated to the `dev` branch, we need to automate a fastfoward merge by the shared account github.
 This is covered in the action for github release [here](https://github.com/OPERA-Cal-Val/tile-mate/blob/dev/.github/workflows/release-github.yml).
