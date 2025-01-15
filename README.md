@@ -404,9 +404,9 @@ As of now, it requires to:
 
 ### Conda-forge Setup
 
-For the purposes of this article, we assume that the package has been successfully released on `PyPI` (if not, that's ok, it requires some modification to the examples as a github package release is acceptable).
+For the purposes of this article, we assume that the package has been successfully released on `PyPI` (if not, that's ok, it requires some modification to the examples as a github package release is acceptable). The conda-forge setup is captured [here](https://conda-forge.org/docs/maintainer/adding_pkgs/#step-by-step-instructions).
 
-The hardest part is getting initially onto `conda-forge`. Once that is done, then every subsquent release is done *automatically*. In other words, there is a `conda-forge` cron that crawls the released repositories to check if there were changes.
+The most time-consuming part is getting a package accepted into `conda-forge`. Once that is done, then every subsquent release is done *automatically*. In other words, there is a `conda-forge` cron that crawls the released repositories (in our case PyPI or github) to check if there were changes.
 For example, if a package on `conda-forge` is tracking the `PyPI` version, then releasing a new version to `PyPI` will eventually be added to `conda-forge`.
 
 The setup is creating a PR that looks like this [one](https://github.com/conda-forge/staged-recipes/pull/19470). Note that this is simply a `meta.yml` added to [staged-recipes](https://github.com/conda-forge/staged-recipes).
