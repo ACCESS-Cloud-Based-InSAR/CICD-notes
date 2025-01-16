@@ -466,6 +466,7 @@ Here is a breif summary:
 
 A PR like this [one](https://github.com/ACCESS-Cloud-Based-InSAR/s1_frame_enumerator/pull/6) is opened and merged into `dev` by the "bot" account.
 
+Important note: it is required to use `merge commit` for the PR to `main` (not squash and merge) so that the tag is correctly fast-forwarded to `dev`. See this issue ticket [here](https://github.com/ASFHyP3/actions/issues/224).
 
 ## Branch Protection and Github Branch Setup
 
